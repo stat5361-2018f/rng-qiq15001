@@ -1,0 +1,27 @@
+---
+title: "HW6"
+author: "Qi Qi"
+date: "10/19/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+library(ggplot2)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Exercise 5.2.1
+*
+$$C\int_0^\infty(2x^{\theta-1}+x^{\theta-1/2})e^{-x}dx=2C\int_0^\infty x^{\theta-1}e^{-x}dx+C\int_0^\infty x^{\theta-1/2}e^{-x}dx$$
+$$=2C\Gamma(\theta)\int_0^\infty \frac{x^{\theta-1}e^{-x}}{\Gamma(\theta)}dx+C\Gamma(\theta+1/2)\int_0^\infty \frac{x^{\theta-1/2}e^{-x}}{\Gamma(\theta+1/2)}dx$$
+$$=2C\Gamma(\theta)+C\Gamma(\theta+1/2)=1 \Rightarrow C=\frac{1}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$$
+$$g(x)=\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta-1/2)}x^{\theta-1}e^{-x}+\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}x^{\theta-1/2}e^{-x}$$
+Thus, $g$ is a mixture of $Gamma(\theta,1)$ and $Gamma(\theta+1/2, 1)$ with weight $\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta-1/2)}$ and $\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}$.
+
+*
+
+Step 1: sample $U$ from $U(0,1)$.
+
+Step 2: if $U<\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta-1/2)}$ then sample $X$ from $Gamma(\theta,1)$; if $U>\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}$ then sample $X$ from $Gamma(\theta+1/2,1)$.
+
+Step 3: return $X$.
