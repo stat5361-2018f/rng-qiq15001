@@ -16,7 +16,7 @@ $$C\int_0^\infty(2x^{\theta-1}+x^{\theta-1/2})e^{-x}dx=2C\int_0^\infty x^{\theta
 $$=2C\Gamma(\theta)\int_0^\infty \frac{x^{\theta-1}e^{-x}}{\Gamma(\theta)}dx+C\Gamma(\theta+1/2)\int_0^\infty \frac{x^{\theta-1/2}e^{-x}}{\Gamma(\theta+1/2)}dx$$
 $$=2C\Gamma(\theta)+C\Gamma(\theta+1/2)=1 \Rightarrow C=\frac{1}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$$
 $$g(x)=\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}x^{\theta-1}e^{-x}+\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}x^{\theta-1/2}e^{-x}$$
-Thus, $g$ is a mixture of $Gamma(\theta,1)$ and $Gamma(\theta+1/2, 1)$ with weight $\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$ and $\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}$.
+Thus, $g$ is a mixture of $Gamma(\theta,1)$ and $Gamma(\theta+1/2, 1)$ with weight $\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$ and $\frac{\Gamma(\theta+1/2)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$.
 
 *
 
@@ -50,12 +50,52 @@ dg <- function(x, theta){
 }
 
 hist(x1, probability = TRUE, main = "theta=1", ylim = c(0, 1))
+points(density(x1), type = "l")
 curve(dg(x, theta1), add = TRUE, col = "red")
 
 n <- 1000
 theta2 <- 2
 x2 <- rg(theta2, n)
 hist(x2, probability = TRUE, main = "theta=2", ylim = c(0, 1))
+points(density(x2), type = "l")
 curve(dg(x, theta2), add = TRUE, col = "red")
+```
+
+*
+
+$$q(x)=\sqrt{4+x}x^{\theta-1}e^{-x}$$
+$$\frac{q(x)}{g(x)}=\frac{\sqrt{4+x}}{C(2+\sqrt{x})}\leq \frac{2+\sqrt{x}}{C(2+\sqrt{x})}=\frac{1}{C}$$
+So, we can let $\alpha=\frac{1}{C}$.
+$$\frac{q(x)}{\alpha g(x)}=\frac{\sqrt{4+x}x^{\theta-1}e^{-x}}{(2x^{\theta-1}+x^{\theta-1/2})e^{-x}}=\frac{\sqrt{4+x}}{2+\sqrt{x}}$$
+
+Step 1: sample $X \sim g$ and $U \sim U(0,1)$.
+
+Step 2: if $U>\frac{q(x)}{\alpha g(x)}$, then go to step 1; else, return $X$.
+
+```{r}
+rf <- function(theta, n){
+  y <- NA
+  i <- 0
+  while (i < n){
+     u <- runif(1, 0, 1)
+     x <- rg(theta, 1)
+     if (u <= sqrt(4 + x) / (2 + sqrt(x))){
+       y[i] <- x
+       i <- i + 1
+     }
+  }
+ return(y)
+}
+
+
+theta1 <- 1
+x1 <- rf(theta1, 1000)
+hist(x1, probability = TRUE, main = "theta=1", ylim = c(0, 1))
+points(density(x1), type = "l")
+
+theta2 <- 2
+x2 <- rf(theta2, 1000)
+hist(x2, probability = TRUE, main = "theta=2", ylim = c(0, 1))
+points(density(x2), type = "l")
 ```
 
