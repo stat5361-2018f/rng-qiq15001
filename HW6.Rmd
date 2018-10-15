@@ -15,13 +15,47 @@ knitr::opts_chunk$set(echo = TRUE)
 $$C\int_0^\infty(2x^{\theta-1}+x^{\theta-1/2})e^{-x}dx=2C\int_0^\infty x^{\theta-1}e^{-x}dx+C\int_0^\infty x^{\theta-1/2}e^{-x}dx$$
 $$=2C\Gamma(\theta)\int_0^\infty \frac{x^{\theta-1}e^{-x}}{\Gamma(\theta)}dx+C\Gamma(\theta+1/2)\int_0^\infty \frac{x^{\theta-1/2}e^{-x}}{\Gamma(\theta+1/2)}dx$$
 $$=2C\Gamma(\theta)+C\Gamma(\theta+1/2)=1 \Rightarrow C=\frac{1}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$$
-$$g(x)=\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta-1/2)}x^{\theta-1}e^{-x}+\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}x^{\theta-1/2}e^{-x}$$
-Thus, $g$ is a mixture of $Gamma(\theta,1)$ and $Gamma(\theta+1/2, 1)$ with weight $\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta-1/2)}$ and $\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}$.
+$$g(x)=\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}x^{\theta-1}e^{-x}+\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}x^{\theta-1/2}e^{-x}$$
+Thus, $g$ is a mixture of $Gamma(\theta,1)$ and $Gamma(\theta+1/2, 1)$ with weight $\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$ and $\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}$.
 
 *
 
 Step 1: sample $U$ from $U(0,1)$.
 
-Step 2: if $U<\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta-1/2)}$ then sample $X$ from $Gamma(\theta,1)$; if $U>\frac{\Gamma(\theta+1/2)}{\Gamma(\theta)+\Gamma(\theta+1/2)}$ then sample $X$ from $Gamma(\theta+1/2,1)$.
+Step 2: if $U<\frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$ then sample $X$ from $Gamma(\theta,1)$; if $U \geq \frac{2\Gamma(\theta)}{2\Gamma(\theta)+\Gamma(\theta+1/2)}$ then sample $X$ from $Gamma(\theta+1/2,1)$.
 
 Step 3: return $X$.
+
+```{r}
+rg <- function(theta, n){
+  X <- NA
+  for (i in 1:n){
+    u <- runif(1,0,1)
+    if (u < 2 * gamma(theta) / (2 * gamma(theta) + gamma(theta + 1/2))){
+      X[i] <- rgamma(1, shape = theta, scale = 1)
+    }else{
+      X[i] <- rgamma(1, shape = theta + 1 / 2, scale = 1)
+    }
+  }
+  return(X)
+}
+
+n <- 1000
+theta1 <- 1
+x1 <- rg(theta1, n)
+
+dg <- function(x, theta){
+  y <-2 * gamma(theta) / (2 * gamma(theta) + gamma(theta + 1/2)) * dgamma(x, shape = theta, scale = 1) + gamma(theta + 1/2) / (2 * gamma(theta) + gamma(theta + 1/2)) * dgamma(x, shape = theta + 1/2, scale = 1)
+  return(y)
+}
+
+hist(x1, probability = TRUE, main = "theta=1", ylim = c(0, 1))
+curve(dg(x, theta1), add = TRUE, col = "red")
+
+n <- 1000
+theta2 <- 2
+x2 <- rg(theta2, n)
+hist(x2, probability = TRUE, main = "theta=2", ylim = c(0, 1))
+curve(dg(x, theta2), add = TRUE, col = "red")
+```
+
