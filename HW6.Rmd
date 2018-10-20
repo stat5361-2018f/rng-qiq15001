@@ -49,15 +49,14 @@ dg <- function(x, theta){
   return(y)
 }
 
-hist(x1, probability = TRUE, main = "theta=1")
-points(density(x1), type = "l")
+plot(density(x1), main = "theta=1")
 curve(dg(x, theta1), add = TRUE, col = "red")
 
 
 theta2 <- 2
 x2 <- rg(theta2, n)
-hist(x2, probability = TRUE, main = "theta=2")
-points(density(x2), type = "l")
+
+plot(density(x2), main = "theta=2")
 curve(dg(x, theta2), add = TRUE, col = "red")
 ```
 
@@ -76,7 +75,7 @@ Step 2: if $U>\frac{q(x)}{\alpha g(x)}$, then go to step 1; else, return $X$.
 rf <- function(theta, n){
   y <- NA
   i <- 0
-  while (i < n){
+  while (i <= n){
      u <- runif(1, 0, 1)
      x <- rg(theta, 1)
      if (u <= sqrt(4 + x) / (2 + sqrt(x))){
@@ -90,13 +89,11 @@ rf <- function(theta, n){
 
 theta1 <- 1
 x1 <- rf(theta1, 10000)
-hist(x1, probability = TRUE, main = "theta=1")
-points(density(x1), type = "l")
+plot(density(x1), main = "theta=1")
 
 theta2 <- 2
 x2 <- rf(theta2, 10000)
-hist(x2, probability = TRUE, main = "theta=2")
-points(density(x2), type = "l")
+plot(density(x2), main = "theta=2")
 ```
 
 # Exercise 5.2.2
@@ -133,7 +130,7 @@ rg <- function(theta, beta, n){
 rf <- function(theta, beta, n){
   y <- NA
   i <- 0
-  while (i < n){
+  while (i <= n){
      u <- runif(1, 0, 1)
      x <- rg(theta, beta, 1)
      if (u <= (x ^ (theta - 1) / (1 + x ^ 2) + sqrt(2 + x ^ 2) * (1 - x) ^ (beta - 1)) / (x ^ (theta - 1) + (1 - x) ^ (beta - 1))){
@@ -147,14 +144,12 @@ rf <- function(theta, beta, n){
 theta1  <- 1
 beta1 <- 2
 x1 <- rf(theta1, beta1, 10000)
-hist(x1, probability = TRUE, main = "theta=1, beta=2")
-points(density(x1), type = "l")
+plot(density(x1), main = "theta=1, beta=2")
 
 theta2  <- 2
 beta2 <- 1
 x2 <- rf(theta2, beta2, 10000)
-hist(x2, probability = TRUE, main = "theta=2, beta=1")
-points(density(x2), type = "l")
+plot(density(x2), main = "theta=2, beta=1")
 ```
 
 *
@@ -177,7 +172,7 @@ Step 3: if $U > \frac{q_k(x)}{\alpha_kg_k(x)}$ then go to step 1; else, return $
 rf <- function(theta, beta, n){
   i <- 0
   y <- NA
-  while (i < n){
+  while (i <= n){
     p <- runif(1, 0, 1)
     if (p < theta / (theta + beta * sqrt(3))){
       u <- runif(1, 0, 1)
@@ -201,12 +196,10 @@ rf <- function(theta, beta, n){
 theta1  <- 1
 beta1 <- 2
 x1 <- rf(theta1, beta1, 10000)
-hist(x1, probability = TRUE, main = "theta=1, beta=2")
-points(density(x1), type = "l")
+plot(density(x1), main = "theta=1, beta=2")
 
 theta2  <- 2
 beta2 <- 1
 x2 <- rf(theta2, beta2, 10000)
-hist(x2, probability = TRUE, main = "theta=2, beta=1")
-points(density(x2), type = "l")
+plot(density(x2), main = "theta=2, beta=1")
 ```
